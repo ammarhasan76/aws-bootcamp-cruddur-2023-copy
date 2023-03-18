@@ -1,0 +1,47 @@
+tasks:
+  - name: aws-cli
+    env:
+      AWS_CLI_AUTO_PROMPT: on-partial
+    init: |
+      cd /workspace
+      echo "Changed Working Directory to Workspace"
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      echo "cURLed aws cli zip file"
+      unzip awscliv2.zip
+      echo "unzipped file"
+      sudo ./aws/install
+      echo "AWS CLI installation complete"
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev
+  - name: npm
+    init: |
+      cd ./frontend-react-js
+      echo "Changed Working Directory to frontend-react-js"
+      npm i
+      echo "npm installation complete"
+  - name: pythonpackages
+    init: |
+      cd ./backend-flask
+      pip install -r requirements.txt
+      echo "python package installations complete"
+vscode:
+  extensions:
+    - 42Crunch.vscode-openapi
+    - cweijan.vscode-postgresql-client2
+    - ms-azuretools.vscode-docker
+    - amazonwebservices.aws-toolkit-vscode
+ports:
+  - name: frontend
+    port: 3000
+    onOpen: open-browser
+    visibility: public
+  - name: backend
+    port: 4567
+    visibility: public
+  - name: xray-daemon
+    port: 2000
+    visibility: public
